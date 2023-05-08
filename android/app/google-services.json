@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "69890410921",
+    "project_id": "klala-5c43c",
+    "storage_bucket": "klala-5c43c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69890410921:android:0e3b09df934e5ca5969cb8",
+        "android_client_info": {
+          "package_name": "com.example.study_helfer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "69890410921-41g8j603ed8h54f70qt87q93afkr247q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGzF_ZOoLRwoXFqu711vRE4ApyMU7jsnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "69890410921-41g8j603ed8h54f70qt87q93afkr247q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
