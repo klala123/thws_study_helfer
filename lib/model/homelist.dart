@@ -27,10 +27,9 @@ class HomeList {
 
   static List<HomeList> homeList = [
 
-
     HomeList(
       title: 'E-Learning',
-      imagePath: 'assets/images/elementeHintergrund.png',
+      imagePath: 'assets/images/img_3.png',
       // 'assets/images/hintergrundBild.png'
       navigateScreen: Builder(
         builder: (BuildContext c){
@@ -42,7 +41,7 @@ class HomeList {
     ),
     HomeList(
       title: 'Campus Portal ',
-      imagePath: 'assets/images/elementeHintergrund.png',
+      imagePath:'assets/images/campusportal.jpg',
       navigateScreen: Builder(
         builder: (BuildContext c){
           _CampuslanchURL() ;
@@ -53,7 +52,7 @@ class HomeList {
     ),
     HomeList(
       title: 'Veranstaltungen',
-      imagePath: 'assets/images/elementeHintergrund.png',
+      imagePath: 'assets/images/img2.png',
       navigateScreen:  Builder(
         builder: (BuildContext c){
           _VeranstaltunglanchURL() ;
@@ -64,7 +63,7 @@ class HomeList {
     ),
     HomeList(
       title: 'THWS-NEWS',
-      imagePath: 'assets/images/elementeHintergrund.png',
+      imagePath: 'assets/images/img_2.png',
 
       navigateScreen: Builder(
         builder: (BuildContext c){
@@ -77,13 +76,13 @@ class HomeList {
 
     HomeList(
       title: 'Grupppen Learning',
-     imagePath: 'assets/images/videoCall1.png',
+     imagePath: 'assets/images/gruppen.jpg',
       navigateScreen:NavigationVideoScreen(),
     ),
 
     HomeList(
       title: 'Study Ordner',
-     imagePath: 'assets/images/elementeHintergrund.png',
+     imagePath: 'assets/images/folder.jpg',
       navigateScreen: FileStorageScreen(),
     ),
   ];

@@ -7,8 +7,9 @@ import 'package:flutter/services.dart';
 import 'dart:typed_data';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
-
-
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
@@ -170,22 +171,29 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
 
   //----------------------------------------------------------
 
+/*
   @override
   Widget build(BuildContext context) {
+
     double _w = MediaQuery.of(context).size.width;
+    double _h = MediaQuery.of(context).size.height;
+    double scaleFactor = MediaQuery.of(context).textScaleFactor;
+
     return Scaffold(
+      backgroundColor: Color(0xFF111010),
       body: Container(
+        /*
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/hintergrundBild.png'),
             fit: BoxFit.cover,
           ),
         ),
+
+         */
         child: AnimationLimiter(
           child: ListView.builder(
-           // padding: EdgeInsets.all(_w / 30),
-            padding: EdgeInsets.only(top: 100, left: _w / 30, right: _w / 30, bottom: _w / 30),
-
+            padding: EdgeInsets.only(top: _h * 0.1, left: _w * 0.05, right: _w * 0.05, bottom: _w * 0.05),
             physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             itemCount: _fileNames.length,
             itemBuilder: (BuildContext context, int index) {
@@ -198,53 +206,33 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
                   horizontalOffset: -300,
                   verticalOffset: -850,
                   child: Card(
-                   color:  Colors.transparent,
+                    color:  Colors.transparent,
                     child: ListTile(
-                      contentPadding: EdgeInsets.symmetric(vertical: 8.0),
-                     // leading: Icon(Icons.insert_drive_file),
-
-                      title:
-                      Row(
-                        children: [
-                          Icon(Icons.insert_drive_file, size: 50, color: Colors.white),
-                          SizedBox(width: 16),
-                          Expanded(child: Text(_fileNames[index] , style: TextStyle(fontSize: 15, color: Colors.white),)
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.download, color: Colors.white),
-                              onPressed: () async {
-                              /*
-                                final storageReference = FirebaseStorage.instance.ref().child('files/${_fileNames[index]}');
-                                final downloadUrl = await storageReference.getDownloadURL();
-                                print("TetE : ${downloadUrl}");
-
-                                //final http.Client httpClient = http.Client();
-                                final response = await http.get(Uri.parse(downloadUrl));
-                                writeCounter(response.bodyBytes, _fileNames[index]);
-
-                               */
-
-                                final http.Response downloadData =
-                                await http.get(Uri.parse(_filePaths[index]));
-                                final Directory tempDir = await getApplicationDocumentsDirectory();
-                                final File tempFile =
-                                File('${tempDir.path}/${_fileNames[index]}');
-                                if (tempFile.existsSync()) {
-                                  await tempFile.delete();
+                      contentPadding: EdgeInsets.symmetric(vertical: _h * 0.01),
+                      title: Row(
+                          children: [
+                            Icon(Icons.insert_drive_file, size: _h * 0.050, color: Colors.white),
+                            SizedBox(width: _w * 0.05),
+                            Expanded(child: Text(_fileNames[index], style: TextStyle(fontSize: _h * 0.02 * scaleFactor, color: Colors.white))),
+                            IconButton(
+                                icon: Icon(Icons.download, color: Colors.white),
+                                onPressed: () async {
+                                  final http.Response downloadData =
+                                  await http.get(Uri.parse(_filePaths[index]));
+                                  final Directory tempDir = await getApplicationDocumentsDirectory();
+                                  final File tempFile =
+                                  File('${tempDir.path}/${_fileNames[index]}');
+                                  if (tempFile.existsSync()) {
+                                    await tempFile.delete();
+                                  }
+                                  await tempFile.create();
+                                  final StorageFile =
+                                  await tempFile.writeAsBytes(downloadData.bodyBytes);
                                 }
-                                await tempFile.create();
-                                final StorageFile =
-                                await tempFile.writeAsBytes(downloadData.bodyBytes);
-
-                              }
-
-                          )
-
-                        ]
-
+                            )
+                          ]
                       ),
                       onTap: () async {
-                        // Download the file from Firebase Storage
                         final http.Response downloadData =
                         await http.get(Uri.parse(_filePaths[index]));
                         final Directory tempDir = await getApplicationDocumentsDirectory();
@@ -257,7 +245,6 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
                         final StorageFile =
                         await tempFile.writeAsBytes(downloadData.bodyBytes);
 
-                        // Open the file using PdfViewerPage
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -273,13 +260,257 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _uploadFile,
-        child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColor,
+      floatingActionButton: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          double screenWidth = MediaQuery.of(context).size.width;
+          double textScaleFactor = MediaQuery.of(context).textScaleFactor;
+          double screenHeight = MediaQuery.of(context).size.height;
+
+          return 
+            
+            Stack(
+              children:
+              [
+              Positioned(
+                bottom: screenHeight * 0.02,
+                left: screenWidth * 0.73,
+                child: Container(
+                width: screenWidth * 0.25,
+                height: screenWidth * 0.07,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 3),
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+                child: ElevatedButton(
+                  onPressed: _uploadFile,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blueGrey,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: FittedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                        SizedBox(width: 8),
+                        Text(
+                          'Datei hochladen',
+                          style: TextStyle(color: Colors.white, fontSize: 16 * textScaleFactor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          ),
+              ),
+          ]
+            );
+        },
       ),
     );
   }
 
+ */
 
+@override
+Widget build(BuildContext context) {
+  double _w = MediaQuery.of(context).size.width;
+  double _h = MediaQuery.of(context).size.height;
+  double scaleFactor = MediaQuery.of(context).textScaleFactor;
+
+  return Scaffold(
+    backgroundColor: Color(0xFF111010),
+    body: Container(
+      /*
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/img_12.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
+
+       */
+      child: AnimationLimiter(
+        child: ListView.builder(
+          padding: EdgeInsets.only(top: _h * 0.1, left: _w * 0.05, right: _w * 0.05, bottom: _w * 0.05),
+          physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          itemCount: _fileNames.length,
+          itemBuilder: (BuildContext context, int index) {
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              delay: Duration(milliseconds: 100),
+              child: SlideAnimation(
+                duration: Duration(milliseconds: 1500),
+                curve: Curves.easeInOutCubic,
+                verticalOffset: -850,
+                child: FadeInAnimation(
+                  duration: Duration(milliseconds: 1500),
+                  curve: Curves.easeInOutCubic,
+                  child: Card(
+                    color: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    elevation: 5.0,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(vertical: _h * 0.01, horizontal: _w * 0.05),
+                      title: Row(
+                          children: [
+                            Icon(Icons.insert_drive_file, size: _h * 0.050, color: Colors.white),
+                            SizedBox(width: _w * 0.05),
+                            Expanded(child: Text(_fileNames[index], style: TextStyle(fontSize: _h * 0.02 * scaleFactor, color: Colors.white))),
+                            IconButton(
+                              icon: Icon(Icons.download, color: Colors.white),
+                              onPressed: () async {
+                                // Berechtigungen überprüfen und anfordern
+                                PermissionStatus status = await Permission
+                                    .storage.status;
+                                if (!status.isGranted) {
+                                  status = await Permission.storage.request();
+                                }
+                                if (status.isGranted) {
+                                  // Datei herunterladen
+                                  final http.Response downloadData =
+                                  await http.get(Uri.parse(_filePaths[index]));
+                                  final Directory? downloadDir = Directory('/storage/emulated/0/Download/') ;
+                                  //await getExternalStorageDirectory(); // Download-Verzeichnis abrufen
+                                  final File downloadFile = File('${downloadDir}${_fileNames[index]}'); // Datei im Download-Ordner erstellen
+
+                                  if (downloadFile.existsSync()) {
+                                    await downloadFile.delete();
+                                  }
+                                  await downloadFile.create(recursive: true);
+                                  await downloadFile.writeAsBytes(
+                                      downloadData.bodyBytes);
+
+                                  try {
+                                    await downloadFile.writeAsBytes(downloadData.bodyBytes);
+                                  } on FileSystemException catch (err) {
+                                    print (err);
+                                  }
+
+                                  // Bestätigungsnachricht anzeigen
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Datei heruntergeladen: ${downloadFile.path}'),
+                                      action: SnackBarAction(
+                                        label: 'Öffnen',
+                                        onPressed: () async {
+                                          // Datei-Explorer öffnen und den Download-Ordner anzeigen
+                                          final Uri uri = Uri.directory(downloadDir?.path ?? '');
+                                          if (await canLaunch(uri.toString())) {
+                                            await launch(uri.toString());
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Datei-Explorer kann nicht geöffnet werden'),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+
+                                }
+                              })
+  ]
+                      ),
+                      onTap: () async {
+                        final http.Response downloadData =
+                        await http.get(Uri.parse(_filePaths[index]));
+                        final Directory tempDir = await getApplicationDocumentsDirectory();
+                        final File tempFile =
+                        File('${tempDir.path}/${_fileNames[index]}');
+                        if (tempFile.existsSync()) {
+                          await tempFile.delete();
+                        }
+                        await tempFile.create();
+                        final StorageFile =
+                        await tempFile.writeAsBytes(downloadData.bodyBytes);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PdfViewerPage(file: StorageFile),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    ),
+    floatingActionButton: LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double screenWidth = MediaQuery.of(context).size.width;
+        double textScaleFactor = MediaQuery.of(context).textScaleFactor;
+        double screenHeight = MediaQuery.of(context).size.height;
+
+        return Stack(
+          children: [
+            Positioned(
+              bottom: screenHeight * 0.02,
+              left: screenWidth * 0.73,
+              child: Container(
+                width: screenWidth * 0.25,
+                height: screenWidth * 0.07,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 3),
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+                child: ElevatedButton(
+                  onPressed: _uploadFile,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blueGrey,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: FittedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 8),
+                        Text(
+                          'Datei hochladen',
+                          style: TextStyle(color: Colors.white, fontSize: 16 * textScaleFactor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
 }
+}
+
+
+
+
+

@@ -21,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void initState() {
     animationController = AnimationController(
       // vsync : this --> Verbindet Animation Controller mit der Tickerprovider der Klasse _MyHomePageState
-        duration: const Duration(milliseconds: 3000), vsync: this);
+        duration: const Duration(milliseconds: 1000), vsync: this);
     super.initState();
   }
 
@@ -35,17 +35,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Das Aufrufen von dispose() auf dem animationController gibt die Ressourcen frei,
   die von diesem AnimationController belegt wurden,
    */
+
   @override
   void dispose() {
     animationController?.dispose();
     super.dispose();
   }
-//-------------------------------------------------------------------------------
-
-
-
 
 //-------------------------------------------------------------------------------
+  /*
   @override
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
@@ -174,14 +172,153 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
- //----------------------------------------------------------------
-  Widget appBar() {
+
+   */
+
+  @override
+  Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isLightMode = brightness == Brightness.light;
-    return SizedBox(
+    // Dynamische Größen und Abstände basierend auf Bildschirmgröße
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double appBarHeight = screenHeight * 0.12;
+    double iconSize = screenWidth * 0.06;
+    double textSize = screenWidth * 0.04;
 
-      height: 100 ,
-      //AppBar().preferredSize.height,
+    return Scaffold(
+     backgroundColor: Color(0xFF111010),
+      body: FutureBuilder<bool>(
+
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (!snapshot.hasData) {
+            return const SizedBox();
+          } else {
+            return Container(
+              /*
+              decoration: BoxDecoration(
+
+                image: DecorationImage(
+                  image: AssetImage("assets/images/hintergrundBild.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+               */
+
+
+
+              child: Padding(
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    appBar(appBarHeight, iconSize),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            GridView.builder(
+                              itemCount: homeList.length - 2,
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (BuildContext context, int index) {
+                                final int count = homeList.length - 1;
+                                final Animation<double> animation =
+                                Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  CurvedAnimation(
+                                    parent: animationController!,
+                                    curve: Interval((1 / count) * index, 1.0,
+                                        curve: Curves.fastOutSlowIn),
+                                  ),
+                                );
+                                animationController?.forward();
+                                return HomeListView(
+                                  animation: animation,
+                                  animationController: animationController,
+                                  listData: homeList[index],
+                                  callBack: () {
+                                    Navigator.push<dynamic>(
+                                      context,
+                                      MaterialPageRoute<dynamic>(
+                                        builder: (BuildContext context) =>
+                                        homeList[index].navigateScreen!,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: multiple ? 2 : 1,
+                                mainAxisSpacing: screenHeight * 0.02,
+                                crossAxisSpacing: screenWidth * 0.08,
+                                childAspectRatio: multiple ? screenWidth / (screenHeight * 0.34) : 12,
+                              ),
+                            ),
+                            GridView.builder(
+                              itemCount:2,
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (BuildContext context, int index) {
+                                int actualIndex = homeList.length - 2 + index;
+                                final Animation<double> animation =
+                                Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  CurvedAnimation(
+                                    parent: animationController!,
+                                    curve: Curves.fastOutSlowIn,
+                                  ),
+                                );
+                                animationController?.forward();
+                                return HomeListView(
+                                  animation: animation,
+                                  animationController: animationController,
+                                  listData: homeList[actualIndex],
+                                  callBack: () {
+                                    Navigator.push<dynamic>(
+                                      context,
+                                      MaterialPageRoute<dynamic>(
+                                        builder: (BuildContext context) =>
+                                        homeList[actualIndex].navigateScreen!,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 1,
+                                mainAxisSpacing: screenHeight * 0.02,
+                                crossAxisSpacing: screenWidth * 0.02,
+                                childAspectRatio: multiple ? screenWidth / (screenHeight * 0.23) : 8,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+//----------------------------------------------------------------
+  Widget appBar(double appBarHeight, double iconSize) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isLightMode = brightness == Brightness.light;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double textSize = screenWidth * 0.04;
+    return SizedBox(
+      height: appBarHeight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -195,15 +332,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 4 , bottom: 9),
-                child:Align(
-                  alignment: Alignment.center, // Zentrieren des Textes
+                padding: const EdgeInsets.only(top: 4, bottom: 9),
+                child: Align(
+                  alignment: Alignment.center,
                   child: Text(
-                    'ADAM, WILLKOMMEN\nZURÜCK ',
-                    textAlign: TextAlign.center, // Zentrieren innerhalb des Text-Widgets
+                    'Klala, WILLKOMMEN\nZURÜCK ',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: textSize,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -212,21 +349,19 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(  right: 8),
+            padding: const EdgeInsets.only(right: 8),
             child: Container(
               width: AppBar().preferredSize.height - 8,
               height: AppBar().preferredSize.height - 8,
-             // color: Colors.black ,
-              //isLightMode ? Colors.white : AppTheme.nearlyBlack,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius:
-                      BorderRadius.circular(AppBar().preferredSize.height),
+                  BorderRadius.circular(AppBar().preferredSize.height),
                   child: Icon(
                     multiple ? Icons.dashboard : Icons.view_agenda,
                     color: AppTheme.white,
-                    //isLightMode ? AppTheme.dark_grey : AppTheme.white,
+                    size: iconSize  * 0.06,
                   ),
                   onTap: () {
                     setState(() {
@@ -258,67 +393,13 @@ class HomeListView extends StatelessWidget {
   final AnimationController? animationController;
   final Animation<double>? animation;
 
-/*
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animationController!,
-      builder: (BuildContext context, Widget? child) {
-        return FadeTransition(
-          opacity: animation!,
-          child: Transform(
-            transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation!.value), 0.0),
-            child: AspectRatio(
-              aspectRatio: 1.5,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: Image.asset(
-                        listData!.imagePath,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned( // Hinzufügen dieser Positioned-Widget
-                      top: 8, // Abstand von oben
-                      left: 8, // Abstand von links
-                      child: Text(
-                        listData!.title, // Text aus der HomeList
-                        style: TextStyle(
-                          color: Colors.black, // Textfarbe
-                          fontSize: 12, // Schriftgröße
-                          backgroundColor: Colors.black12,
-                          fontWeight: FontWeight.bold, // Schriftstil
-                        ),
-                      ),
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        splashColor: Colors.grey.withOpacity(0.2),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(4.0)),
-                        onTap: callBack,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
-
-   */
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double textSize = screenWidth * 0.025;
+
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -356,14 +437,14 @@ class HomeListView extends StatelessWidget {
                           ),
                         ),
                         Positioned(
-                          top: 8,
-                          left: 8,
+                          top: 18,
+                          left: 20,
                           child: Text(
                             listData!.title,
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 12,
-                              backgroundColor: Colors.black12,
+                              fontSize: textSize ,
+                             // backgroundColor: Colors.black12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
