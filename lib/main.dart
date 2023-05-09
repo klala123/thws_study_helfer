@@ -6,15 +6,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:thws_study_helfer/model/videoHomeList.dart';
-import 'package:thws_study_helfer/navigationHomeScreen.dart';
-import 'package:thws_study_helfer/videoScreen.dart';
+import 'package:thws_study_helfer/videoCall/VideoList.dart';
+import 'package:thws_study_helfer/navigation/navigationHomeScreen.dart';
+import 'package:thws_study_helfer/videoCall/JoinVideoScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await videoHomeList.init();
+  await VideoList.init();
 
   runApp(MyApp());
 }
@@ -60,7 +60,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final StreamController<videoHomeList> _streamController = StreamController<videoHomeList>();
+  final StreamController<VideoList> _streamController = StreamController<VideoList>();
   DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('data');
 
   Future<void> signInAnonymously() async {
@@ -85,12 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
       DataSnapshot snapshot = event.snapshot;
       if (snapshot.value is Map) {
         Map<String, dynamic> value = Map<String, dynamic>.from(snapshot.value as Map<dynamic, dynamic>);
-        videoHomeList videoHomeListItem = videoHomeList(
+        VideoList videoHomeListItem = VideoList(
           key: snapshot.key,
           imagePath: value['url'],
           isFromGallery: false,
           title: value['name'],
-          navigateScreen: ZumVideoCallPage(
+          navigateScreen: JoinVideoScreen(
             title: value['name'],
             conferenceID: '343',
           ),
@@ -100,9 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateVideoHomeList(List<videoHomeList> newList) {
+  void updateVideoHomeList(List<VideoList> newList) {
     setState(() {
-      videoHomeList.homeList = newList;
+      VideoList.homeList = newList;
     });
   }
 
@@ -110,11 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     String? lastKey;
 
-    if (videoHomeList.homeList.isNotEmpty) {
-      lastKey = videoHomeList.homeList.last.key;
+    if (VideoList.homeList.isNotEmpty) {
+      lastKey = VideoList.homeList.last.key;
     }
     videosData(lastKey);
-    updateVideoHomeList(videoHomeList.homeList);
+    updateVideoHomeList(VideoList.homeList);
     signInAnonymously();
     super.initState();
   }
@@ -140,11 +140,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<videoHomeList>(
+    return StreamBuilder<VideoList>(
       stream: _streamController.stream,
-      builder: (BuildContext context, AsyncSnapshot<videoHomeList> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<VideoList> snapshot) {
         if (snapshot.hasData) {
-          videoHomeList.homeList.add(snapshot.data!);
+          VideoList.homeList.add(snapshot.data!);
         }
         return NavigationHomeScreen();
       },

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
-import '../home_drawer.dart';
+import 'home_drawer.dart';
 
 class DrawerUserController extends StatefulWidget {
   const DrawerUserController({
@@ -98,8 +98,7 @@ class _DrawerUserControllerState extends State<DrawerUserController>
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isLightMode = brightness == Brightness.light;
     return Scaffold(
-      backgroundColor:  AppTheme.white ,
-      //isLightMode ? AppTheme.white : AppTheme.nearlyBlack,
+      backgroundColor: isLightMode ? AppTheme.white : AppTheme.nearlyBlack,
       body: SingleChildScrollView(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
@@ -173,7 +172,8 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                           width: AppBar().preferredSize.height - 8,
                           height: AppBar().preferredSize.height - 8,
                           child: Material(
-                            color: Colors.transparent,
+                            color: // Colors.white ,
+                            Colors.transparent,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(
                                   AppBar().preferredSize.height),
@@ -182,8 +182,13 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                                 child: widget.menuView != null
                                     ? widget.menuView
                                     : AnimatedIcon(
-                                        color: Colors.white,
-                                      //  isLightMode  ? AppTheme.dark_grey : AppTheme.white,
+                                        color: AppTheme.white ,
+                                        /*
+                                        isLightMode
+                                            ? AppTheme.dark_grey
+                                            : AppTheme.white,
+
+                                         */
                                         icon: widget.animatedIconData ??
                                             AnimatedIcons.arrow_menu,
                                         progress: iconAnimationController!),

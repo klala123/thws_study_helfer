@@ -1,4 +1,5 @@
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -20,7 +21,65 @@ class HomeDrawer extends StatefulWidget {
   _HomeDrawerState createState() => _HomeDrawerState();
 }
 
+//___________________________________________________
+
 class _HomeDrawerState extends State<HomeDrawer> {
+
+  String userName = 'Klala Chikhi' ;
+  void updateUserName(String newName, String userId) {
+    DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('users');
+    usersRef.child(userId).set({'name': newName});
+  }
+
+  Future<void> showEditNameDialog(BuildContext context, String currentName, String userId) async {
+    TextEditingController nameController = TextEditingController(text: currentName);
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Benutzer muss den Dialog schließen, um die Anwendung wieder zu verwenden.
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Benutzername ändern'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Abbrechen'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Speichern'),
+              onPressed: () {
+                updateUserName(nameController.text, userId);
+                Navigator.of(context).pop();
+                setState(() {userName = nameController.text;  }); // Hinzufügen von setState, um die Benutzeroberfläche zu aktualisieren.
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+
+
+
+
+
   List<DrawerList>? drawerList;
   @override
   void initState() {
@@ -122,13 +181,30 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4),
-                    child: Text(
-                      'Klala Chikhi',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: isLightMode ? AppTheme.grey : AppTheme.white,
-                        fontSize: 18,
+
+                    child: Row(
+                      children: [
+                      Text(
+                       userName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: isLightMode ? AppTheme.grey : AppTheme.white,
+                          fontSize: 18,
+                        ),
                       ),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          await showEditNameDialog(context, userName, user.uid);
+                          setState(() {
+                            //updateUserName(newName,  user.uid)
+                          }); // Aktualisiert die Anzeige nach dem Ändern des Namens.
+                        }
+                      },
+                    )
+                    ]
                     ),
                   ),
                 ],
@@ -187,13 +263,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
     );
   }
 
+
+
+
+
+
   void onTapped() {
     print('Doing Something...'); // Print to console.
   }
+//------------------------------------------------------
 
   Widget inkwell(DrawerList listData) {
     return Material(
-      color: Colors.transparent,
+     color: Colors.transparent,
+
       child: InkWell(
         splashColor: Colors.grey.withOpacity(0.1),
         highlightColor: Colors.transparent,
@@ -229,12 +312,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           width: 24,
                           height: 24,
                           child: Image.asset(listData.imageName,
-                              color:
-                             // widget.screenIndex == listData.index ?
-                              Colors.white
-                                //  : AppTheme.nearlyBlack
-
-                          ),
+                              color: widget.screenIndex == listData.index
+                                  ? Colors.blue
+                                  : AppTheme.nearlyBlack),
                         )
                       : Icon(listData.icon?.icon,
                           color: widget.screenIndex == listData.index
@@ -295,7 +375,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
       ),
     );
   }
-
+//--------------------------------------------------------------------
   Future<void> navigationtoScreen(DrawerIndex indexScreen) async {
     widget.callBackIndex!(indexScreen);
   }
@@ -309,6 +389,7 @@ enum DrawerIndex {
   About,
   Invite,
   Testing,
+  Video ,
   Datei
 }
 
