@@ -45,30 +45,9 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
     _initializeFirebase();
 
   }
-  Future<void> _requestDownloadPermission() async {
-    PermissionStatus status = await Permission.storage.status;
-    if (!status.isGranted) {
-      PermissionStatus newStatus = await Permission.storage.request();
-      if (!newStatus.isGranted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Zugriff auf den Download-Ordner wurde verweigert'),
-          ),
-        );
-        return;
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Zugriff auf den Download-Ordner wurde gewährt'),
-          ),
-        );
-      }
-    }
-  }
-
-
 
   static const platform = MethodChannel('com.example.androidstorage.android_12_flutter_storage/storage');
+
   Future<void> requestStoragePermission() async {
     try{
       await platform.invokeMethod('requestStoragePermission');
@@ -76,14 +55,14 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
       print(e) ;
     }
   }
-
+//----------------------------------------------------------
   Future<void> _initializeFirebase() async {
     _fileRef = FirebaseDatabase.instance
         .reference()
         .child('folders/${widget.folder.key}/files');
     _getFileList();
   }
-
+//----------------------------------------------------------
   Future<void> _getFileList() async {
     DataSnapshot dataSnapshot = (await _fileRef!.once()).snapshot;
      files = dataSnapshot.value as Map<dynamic, dynamic>;
@@ -94,7 +73,7 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
       });
     });
   }
-
+//----------------------------------------------------------
   Future<void> _uploadFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -122,6 +101,8 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
     }
   }
 
+  //----------------------------------------------------------
+
   static Future<String> getExternalDocumentPath() async {
     // To check whether permission is given for this app or not.
     var status = await Permission.storage.status;
@@ -142,6 +123,9 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
     await Directory(exPath).create(recursive: true);
     return exPath;
   }
+
+  //----------------------------------------------------------
+
   static Future<String> get _localPath async {
     // final directory = await getApplicationDocumentsDirectory();
     // return directory.path;
@@ -150,6 +134,7 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
     return directory;
   }
 
+  //----------------------------------------------------------
   static Future<File> writeCounter(Uint8List  bytes,String name) async {
     final path = await _localPath;
     // Create a file for the path of
@@ -158,14 +143,21 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
     print("Save file");
 
     // Write the data in the file you have created
+
+      try {
+        file.writeAsBytes(bytes);
+      } on FileSystemException catch (e) {
+        print(" Erorrrrrr ");
+      }
+
     return file.writeAsBytes(bytes);
   }
 
 
+  //----------------------------------------------------------
   Future<String?> getPublicDownloadPath() async {
     if (Platform.isAndroid) {
       try {
-
         return '/storage/emulated/0/Download/';
       } catch (e) {
         print('Failed to get public download path: $e');
@@ -176,73 +168,7 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
     }
   }
 
-  Future<void> downloadFileExample(String fileName ) async {
-    await _requestDownloadPermission();
-    final directory = await getExternalStorageDirectory();
-    final path =  '${directory?.path}/Downloads';
-    final downloadFolder = Directory(path);
-    if (!await downloadFolder.exists()) {
-      await downloadFolder.create(recursive: true);
-    }
-
-    print (" Glala  ${path}");
-    try {
-      final storageReference = FirebaseStorage.instance.ref().child('files/$fileName');
-      final downloadUrl = await storageReference.getDownloadURL();
-
-      //final http.Client httpClient = http.Client();
-
-      final response = await http.get(Uri.parse(downloadUrl));
-
-      if (response.statusCode != 200) {
-        throw 'Error: Failed to download file with status code ${response.statusCode}';
-      }
-
-      final Directory? downloadsDirectory = Directory('/storage/emulated/0/Download');
-      print("Tess  ${downloadsDirectory?.path}");
-      final File file = File('$path/$fileName');
-
-      await file.writeAsBytes(response.bodyBytes);
-
-      print('File downloaded and saved: ${file.path}');
-    } on PlatformException catch (e) {
-      print('Error: Failed to download and save file. $e');
-    }
-  }
-
-  /*
-   await _requestDownloadPermission();
-    final directory = await getExternalStorageDirectory();
-    final path =  '${directory?.path}/Downloads';
-    final downloadFolder = Directory(path);
-    if (!await downloadFolder.exists()) {
-      await downloadFolder.create(recursive: true);
-    }
-
-    print (" Glala  ${path}");
-    try {
-      final storageReference = FirebaseStorage.instance.ref().child('files/$fileName');
-      final downloadUrl = await storageReference.getDownloadURL();
-
-      //final http.Client httpClient = http.Client();
-
-      final response = await http.get(Uri.parse(downloadUrl));
-
-      if (response.statusCode != 200) {
-        throw 'Error: Failed to download file with status code ${response.statusCode}';
-      }
-
-      final Directory? downloadsDirectory = Directory('/storage/emulated/0/Download');
-      print("Tess  ${downloadsDirectory?.path}");
-      final File file = File('$path/$fileName');
-
-      await file.writeAsBytes(response.bodyBytes);
-
-      print('File downloaded and saved: ${file.path}');
-    } on PlatformException catch (e) {
-      print('Error: Failed to download and save file. $e');
-    }
-   */
+  //----------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +213,28 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
                           IconButton(
                             icon: Icon(Icons.download, color: Colors.white),
                               onPressed: () async {
-                                downloadFileExample(_fileNames[index]);
+                              /*
+                                final storageReference = FirebaseStorage.instance.ref().child('files/${_fileNames[index]}');
+                                final downloadUrl = await storageReference.getDownloadURL();
+                                print("TetE : ${downloadUrl}");
+
+                                //final http.Client httpClient = http.Client();
+                                final response = await http.get(Uri.parse(downloadUrl));
+                                writeCounter(response.bodyBytes, _fileNames[index]);
+
+                               */
+
+                                final http.Response downloadData =
+                                await http.get(Uri.parse(_filePaths[index]));
+                                final Directory tempDir = await getApplicationDocumentsDirectory();
+                                final File tempFile =
+                                File('${tempDir.path}/${_fileNames[index]}');
+                                if (tempFile.existsSync()) {
+                                  await tempFile.delete();
+                                }
+                                await tempFile.create();
+                                final StorageFile =
+                                await tempFile.writeAsBytes(downloadData.bodyBytes);
 
                               }
 
@@ -300,7 +247,7 @@ class _FolderFilesScreenState extends State<FolderFilesScreen> {
                         // Download the file from Firebase Storage
                         final http.Response downloadData =
                         await http.get(Uri.parse(_filePaths[index]));
-                        final Directory tempDir = await getTemporaryDirectory();
+                        final Directory tempDir = await getApplicationDocumentsDirectory();
                         final File tempFile =
                         File('${tempDir.path}/${_fileNames[index]}');
                         if (tempFile.existsSync()) {

@@ -149,10 +149,10 @@ packages:
     dependency: transitive
     description:
       name: crypto
-      sha256: aa274aa7774f8964e4f4f38cc994db7b6158dd36e9187aaceaddc994b35c6c67
+      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.2"
+    version: "3.0.3"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -165,10 +165,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "0894a098594263fe1caaba3520e3016d8a855caeb010a882273189cca10f11e9"
+      sha256: "347d56c26d63519552ef9a569f2a593dda99a81fdbdff13c584b7197cfe05059"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.1"
+    version: "5.1.2"
   encrypt:
     dependency: transitive
     description:
@@ -209,14 +209,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.1"
-  file_utils:
-    dependency: "direct main"
-    description:
-      name: file_utils
-      sha256: "24e9210c68de5eb740320c397839c5e2bb377bf31ed4cd55776d60d8b96e2a81"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.4"
   firebase_auth:
     dependency: "direct main"
     description:
@@ -350,14 +342,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.10"
-  flutter_pdfview:
-    dependency: "direct main"
-    description:
-      name: flutter_pdfview
-      sha256: "97c26f92d32fa09ed2302156bdc234befe78478353ba5541b88e538589bcbeab"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -424,14 +408,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.5"
-  globbing:
-    dependency: transitive
-    description:
-      name: globbing
-      sha256: "257fb566a79c13c9b6323376b91e1312cdecfbeb17bf212b457a254017df1e0e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   http:
     dependency: "direct main"
     description:
@@ -729,10 +705,10 @@ packages:
     dependency: transitive
     description:
       name: sqflite
-      sha256: acf091c6e55c50d00b30b8532b2dd23e393cf775861665ebd0f15cdd6ebfb079
+      sha256: "3a82c9a216b46b88617e3714dd74227eaca20c501c4abcc213e56db26b9caa00"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.8+1"
+    version: "2.2.8+2"
   sqflite_common:
     dependency: transitive
     description:

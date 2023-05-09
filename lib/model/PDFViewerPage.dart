@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
+//import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:open_file/open_file.dart';
 
 
@@ -23,14 +23,20 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_fileExtension == 'pdf') {
+    if ( false ) {
       return Scaffold(
         appBar: AppBar(
           title: Text('PDF Viewer'),
         ),
-        body: PDFView(
+        body: Container (
+          //  _openFileWithNativeApp(widget.file.path);
+        )
+        /*
+        PDFView(
           filePath: widget.file.path,
         ),
+
+         */
       );
     } else {
       _openFileWithNativeApp(widget.file.path);

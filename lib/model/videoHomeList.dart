@@ -27,7 +27,13 @@ class videoHomeList {
   final databaseReference = FirebaseDatabase.instance.reference();
   static List<videoHomeList> homeList = [ ] ;
 
- static void addInitData (){
+  //---------------------------------------------------------------------
+  static String entferneLeerzeichen(String eingabe) {
+    return eingabe.replaceAll("\\s", "");
+  }
+
+
+  static void addInitData (){
     homeList.addAll( [
       videoHomeList(
         imagePath: 'assets/images/ElementHintergrund.png',
@@ -48,41 +54,12 @@ class videoHomeList {
           navigateScreen: ZumVideoCallPage(title: 'Datenbank', conferenceID: '14',)
       ),
     ]);
-    /*
-    var url;
-    DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('data');
-
-    UserData user = UserData(name: 'Algebra Gruppe') ;
-   url = "assets/images/ElementHintergrund.png";
-    Map<String, dynamic> contact = {
-      'name': user.name,
-      'url': url,
-      'id' : '${user.name}ID'
-    };
-    print("dbRef:      ${dbRef}");
-    dbRef!.push().set(contact).whenComplete(() => {
-      //videosData()
-    });
-
-    UserData user2 = UserData(name: 'Prog Gruppe') ;
-    Map<String, dynamic> contact2 = {
-      'name': user2.name,
-      'url': url,
-      'id' : '${user2.name}ID'
-    };
-    print("dbRef:      ${dbRef}");
-    dbRef!.push().set(contact2).whenComplete(() => {
-      //videosData()
-    });
-
-     */
-
   }
 
-
+//---------------------------------------------------------------
   static Future<void> init() async {
     // Add initial data
-    addInitData();
+    //addInitData();
     DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('data');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
@@ -98,13 +75,14 @@ class videoHomeList {
               groupKey: value['id'],
               isFromGallery: false,
               title: value['name'],
-              navigateScreen: ZumVideoCallPage(title: value['name'], conferenceID: value['id'],),
+              navigateScreen: ZumVideoCallPage(title: value['name'], conferenceID:entferneLeerzeichen( value['name']),),
             )
         );
       });
     }
   }
 
+//-----------------------------------------------------------
   static Stream<List<videoHomeList>> getVideoHomeListStream() {
     final databaseReference = FirebaseDatabase.instance.reference();
     DatabaseReference dbRef = databaseReference.child('data');
@@ -124,7 +102,7 @@ class videoHomeList {
             title: value['name'],
             navigateScreen: ZumVideoCallPage(
               title: value['name'],
-              conferenceID:  '343',
+              conferenceID: entferneLeerzeichen( value['name']),
             ),
           ));
         });
@@ -132,8 +110,6 @@ class videoHomeList {
       return tempList;
     });
   }
-
-
 
 
   }
