@@ -6,8 +6,10 @@ import '../scound_screens/feedback_screen.dart';
 import '../scound_screens/help_screen.dart';
 import '../custom_drawer/home_drawer.dart';
 import '../StartScreen.dart';
+import '../todo/TodoListPage.dart';
 import '../videoCall/VideoHomeScreen.dart';
 import '../scound_screens/invite_friend_screen.dart';
+import 'navigationHomeScreen.dart';
 
 class NavigationVideoScreen extends StatefulWidget {
   @override
@@ -58,9 +60,10 @@ class _NavigationVideoScreenState extends State<NavigationVideoScreen> {
       drawerIndex = drawerIndexdata;
       switch (drawerIndex) {
         case DrawerIndex.HOME:
-          setState(() {
-            screenView =  StartScreen();
-          });
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => NavigationHomeScreen()),
+                  (route) => false
+          );
           break;
 
         case DrawerIndex.Video:
@@ -82,6 +85,14 @@ class _NavigationVideoScreenState extends State<NavigationVideoScreen> {
         case DrawerIndex.Invite:
           setState(() {
             screenView = InviteFriend();
+          });
+          break;
+
+        case DrawerIndex.ToDoList:
+          setState(() {
+            screenView = TodoListPage () ;
+            //TodoList();
+            //FolderHomeScreen();
           });
           break;
         default:

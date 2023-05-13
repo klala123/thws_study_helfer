@@ -118,7 +118,7 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       ),
-      style: TextStyle(fontSize: 14.0, color: Colors.white), // Update the text color
+      style: TextStyle(fontSize: MediaQuery.of(context).textScaleFactor * 14 , color: Colors.white), // Update the text color
       cursorColor: Colors.white, // Update the cursor color
     );
   }
@@ -181,12 +181,30 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
     double childAspectRatio = 3;
 
     return Scaffold(
-      backgroundColor: Color(0xFF111010),
+      //backgroundColor: Color(0xFF111010),
       appBar: PreferredSize(
+
         preferredSize: Size.fromHeight(AppBar().preferredSize.height),
         child: appBar(),
       ),
       body: Container(
+        decoration: const BoxDecoration(
+
+         // borderRadius: BorderRadius.horizontal(
+           // left: Radius.circular(10),
+            //right: Radius.circular(10),
+
+         // ),
+          gradient: LinearGradient(
+            colors: [
+              // Color(0xFFDADDDF)
+              Color(0xFF272928),
+              Color(0xFF4D5D68),
+            ],
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+          ),
+        ),
         /*
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -319,6 +337,7 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
           ],
         ),
       ),
+      /*
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -328,6 +347,55 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
         },
         child: Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
+      ),
+
+       */
+      floatingActionButton: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          double screenWidth = MediaQuery.of(context).size.width;
+          double buttonWidth = screenWidth * 0.25; // 50% der Bildschirmbreite
+          // 50% der Bildschirmbreite
+          double textScaleFactor = MediaQuery.of(context).textScaleFactor;
+
+          return Container(
+            width: buttonWidth,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  offset: Offset(0, 3),
+                  blurRadius: 6,
+                ),
+              ],
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddVideoCallGroupp()) ) ;
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blueGrey,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 8),
+                  Text(
+                    'Erstellen',
+                    style: TextStyle(color: Colors.white, fontSize: 14 * MediaQuery.of(context).textScaleFactor),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -341,46 +409,68 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
 //-------------------------------------------------------------------------------------
 
   Widget appBar() {
+
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isLightMode = brightness == Brightness.light;
-    return SizedBox(
-      height: AppBar().preferredSize.height,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 8, left: 8),
-            child: Container(
-              width: AppBar().preferredSize.height - 8,
-              height: AppBar().preferredSize.height - 8,
+    return Container(
+      decoration: const BoxDecoration(
+
+        // borderRadius: BorderRadius.horizontal(
+        // left: Radius.circular(10),
+        //right: Radius.circular(10),
+
+        // ),
+        gradient: LinearGradient(
+          colors: [
+            // Color(0xFFDADDDF)
+            Color(0xFF272928),
+            Color(0xFF4D5D68),
+          ],
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+        ),
+      ),
+      child: SizedBox(
+
+        height: AppBar().preferredSize.height,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, left: 8),
+              child: Container(
+
+                width: AppBar().preferredSize.height - 8,
+                height: AppBar().preferredSize.height - 8,
+              ),
             ),
-          ),
-          Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 60),
-                child: Text(
-                  'THWS StudiHelfer',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.white ,
-                    //isLightMode ? AppTheme.darkText : AppTheme.white,
-                    fontWeight: FontWeight.w700,
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 60),
+                  child: Text(
+                    'THWS StudiHelfer',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).textScaleFactor * 14,
+                      color: Colors.white ,
+                      //isLightMode ? AppTheme.darkText : AppTheme.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 60, right: 8),
-            child: Container(
-              width: AppBar().preferredSize.height - 8,
-              height: AppBar().preferredSize.height - 8,
-             // color: Colors.black,
-              //isLightMode ? Colors.white : AppTheme.nearlyBlack,
+            Padding(
+              padding: const EdgeInsets.only(top: 60, right: 8),
+              child: Container(
+                width: AppBar().preferredSize.height - 8,
+                height: AppBar().preferredSize.height - 8,
+               // color: Colors.black,
+                //isLightMode ? Colors.white : AppTheme.nearlyBlack,
 
 
-            ),    ),   ], ),
+              ),    ),   ], ),
+      ),
     ); }
 
 
@@ -410,112 +500,7 @@ class HomeListView extends StatelessWidget {
     final DatabaseReference groupRef = FirebaseDatabase.instance.reference().child('groups');
     groupRef.child(groupKey).remove();
   }
-/*
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animationController!,
-      builder: (BuildContext context, Widget? child) {
-        return FadeTransition(
-          opacity: animation!,
-          child: Transform(
-            transform: Matrix4.translationValues(
-                0.0, 50 * (1.0 - animation!.value), 0.0),
-            child: AspectRatio(
-              aspectRatio: 1.5,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(30.0)),
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: listData!.isFromGallery
-                          ? Image.file(
-                        File(listData!.imagePath),
-                        fit: BoxFit.cover,
-                      )
-                          : Image.asset(
-                        listData!.imagePath,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      top: 15,
-                      left: 23,
-                      child: Text(
-                        listData!.title,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        splashColor: Colors.grey.withOpacity(0.2),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(12.0)),
-                        onTap: callBack,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: ScaleTransition(
-                        scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                          CurvedAnimation(
-                            parent: animationController!,
-                            curve: Curves.easeOutCubic,
-                          ),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              if (onDelete != null) {
-                                onDelete!();
-                                print("onDelete-Callback wurde aufgerufen");
-                              }
-                            },
-                            customBorder: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.15),
-                                    blurRadius: 8,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                                color: Colors.blueGrey,
-                              ),
-                              padding: EdgeInsets.all(8),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
 
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
- */
 
   @override
   Widget build(BuildContext context) {

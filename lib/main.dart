@@ -5,11 +5,15 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:thws_study_helfer/StartScreen.dart';
 
 import 'package:thws_study_helfer/videoCall/VideoList.dart';
 import 'package:thws_study_helfer/navigation/navigationHomeScreen.dart';
 import 'package:thws_study_helfer/videoCall/JoinVideoScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'login/login_screen.dart';
+import 'model/AuthService.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +26,7 @@ void main() async {
 class MyApp extends StatelessWidget {
    MyApp({super.key});
 
+   String userName = 'yoOor Name';
 
 
 
@@ -47,10 +52,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//--------------------------------------------------------------------------
 class MyHomePage extends StatefulWidget {
-
-
-
   const MyHomePage({super.key, required this.title});
   final String title;
   @override
@@ -59,21 +62,14 @@ class MyHomePage extends StatefulWidget {
 //________________________________________________________________
 
 class _MyHomePageState extends State<MyHomePage> {
+  User? user ;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   final StreamController<VideoList> _streamController = StreamController<VideoList>();
   DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('data');
 
-  Future<void> signInAnonymously() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
 
-    try {
-      UserCredential userCredential = await auth.signInAnonymously();
-      print("Benutzer  id ${userCredential}");
-    } on FirebaseAuthException catch (e) {
-      print("FFehlerrr");
-    }
-  }
-
+//------------------------------------------------
   Future<void> videosData(String? lastKey) async {
     Query query = dbRef.orderByKey();
 
@@ -99,15 +95,16 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
   }
-
+//----------------------------------------------------------
   void updateVideoHomeList(List<VideoList> newList) {
     setState(() {
       VideoList.homeList = newList;
     });
   }
-
+//-----------------------------------------------------
   @override
   void initState() {
+    super.initState();
     String? lastKey;
 
     if (VideoList.homeList.isNotEmpty) {
@@ -115,29 +112,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     videosData(lastKey);
     updateVideoHomeList(VideoList.homeList);
-    signInAnonymously();
-    super.initState();
+
+    if(mounted) {
+      auth.authStateChanges().listen((User? user) {
+        setState(() {
+          AuthService().setUser(user);
+          this.user = user;
+          print("KlalaUserId : ${user}");
+          print("KlalaUserId"); //Hier hinzugefügt
+        });
+      });
+    }
+
   }
 
 
 
-/*
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<videoHomeList>(
-      stream: _streamController.stream,
-      builder: (BuildContext context, AsyncSnapshot<videoHomeList> snapshot) {
-        if (snapshot.hasData) {
-          videoHomeList.homeList.add(snapshot.data!);
-        }
-        return NavigationHomeScreen();
-      },
-    );
-  }
-}
 
- */
-
+//-----------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<VideoList>(
@@ -146,12 +138,21 @@ class _MyHomePageState extends State<MyHomePage> {
         if (snapshot.hasData) {
           VideoList.homeList.add(snapshot.data!);
         }
-        return NavigationHomeScreen();
+
+
+
+
+         if (AuthService().user != null) return NavigationHomeScreen();
+        else return LoginScreen();
+
+        //NavigationHomeScreen();
+          //NavigationHomeScreen();
       },
     );
   }
 }
 
+//-----------------------------------------------------
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 

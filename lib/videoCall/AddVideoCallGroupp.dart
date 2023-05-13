@@ -42,12 +42,31 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
     return Scaffold(
       body: Container(
         width: double.infinity,
+        decoration: const BoxDecoration(
+
+          // borderRadius: BorderRadius.horizontal(
+          // left: Radius.circular(10),
+          //right: Radius.circular(10),
+
+          // ),
+          gradient: LinearGradient(
+            colors: [
+              // Color(0xFFDADDDF)
+              Color(0xFF272928),
+              Color(0xFF4D5D68),
+            ],
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+          ),
+        ),
+        /*
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/hintergrundBild.png'),
             fit: BoxFit.cover,
           ),
         ),
+         */
         child: SingleChildScrollView(
           child: Center(
             child: ConstrainedBox(
@@ -114,7 +133,7 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      color: Colors.indigo[900],
+                      color: Colors.blueGrey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),

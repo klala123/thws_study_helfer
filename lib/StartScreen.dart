@@ -1,7 +1,13 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'app_theme.dart';
 import 'package:flutter/material.dart';
 import 'homelist.dart';
+import 'package:thws_study_helfer/model/globals.dart' as globals;
+
+import 'model/globals.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
@@ -17,11 +23,24 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
   AnimationController? animationController;
   bool multiple = true;
 
+  Stream<String> getUserNameStream() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('users');
+      return usersRef.child(user.uid).onValue.map((event) {
+        Map<dynamic, dynamic> values = event.snapshot.value as Map<dynamic, dynamic>;
+        return values['name'] ?? 'Unbekannter Name';
+      });
+    }
+    return Stream.value('Unbekannter Name');
+  }
+
   @override
   void initState() {
     animationController = AnimationController(
       // vsync : this --> Verbindet Animation Controller mit der Tickerprovider der Klasse _MyHomePageState
         duration: const Duration(milliseconds: 1000), vsync: this);
+    getUserNameStream();
     super.initState();
   }
 
@@ -42,6 +61,8 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
     super.dispose();
   }
 
+
+
 //-------------------------------------------------------------------------------
 
   @override
@@ -56,126 +77,148 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
     double textSize = screenWidth * 0.04;
 
     return Scaffold(
-     backgroundColor: Color(0xFF111010),
-      body: FutureBuilder<bool>(
+    // backgroundColor: Color(0xFF111010),
+      body: Container(
+        decoration: const BoxDecoration(
 
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox();
-          } else {
-            return Container(
-              /*
-              decoration: BoxDecoration(
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(10),
+            right: Radius.circular(10),
 
-                image: DecorationImage(
-                  image: AssetImage("assets/images/hintergrundBild.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
+          ),
+          gradient: LinearGradient(
+            colors: [
+              // Color(0xFFDADDDF)
+              Color(0xFF272928),
+              Color(0xFF4D5D68),
+            ],
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+          ),
+        ),
+        child: FutureBuilder<bool>(
 
-               */
+          future: getData(),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (!snapshot.hasData) {
+              return const SizedBox();
+            } else {
+              return Container(
+
+                child: Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      StreamBuilder<String>(
+                          stream: getUserNameStream(),
+                             builder :(BuildContext context, AsyncSnapshot<String> snapshot) {
+                               if (snapshot.hasError) {
+                                 return Text('Error: ${snapshot.error}');
+                               }
+                               switch (snapshot.connectionState) {
+                                 case ConnectionState.waiting:
+                                   return appBar(appBarHeight, iconSize);
+                                 default:
+                                   return  appBar(appBarHeight, iconSize);
+                               }
+                             }, ) ,
 
 
 
-              child: Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    appBar(appBarHeight, iconSize),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            GridView.builder(
-                              itemCount: homeList.length - 2,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (BuildContext context, int index) {
-                                final int count = homeList.length - 1;
-                                final Animation<double> animation =
-                                Tween<double>(begin: 0.0, end: 1.0).animate(
-                                  CurvedAnimation(
-                                    parent: animationController!,
-                                    curve: Interval((1 / count) * index, 1.0,
-                                        curve: Curves.fastOutSlowIn),
-                                  ),
-                                );
-                                animationController?.forward();
-                                return HomeListView(
-                                  animation: animation,
-                                  animationController: animationController,
-                                  listData: homeList[index],
-                                  callBack: () {
-                                    Navigator.push<dynamic>(
-                                      context,
-                                      MaterialPageRoute<dynamic>(
-                                        builder: (BuildContext context) =>
-                                        homeList[index].navigateScreen!,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: multiple ? 2 : 1,
-                                mainAxisSpacing: screenHeight * 0.02,
-                                crossAxisSpacing: screenWidth * 0.08,
-                                childAspectRatio: multiple ? screenWidth / (screenHeight * 0.34) : 12,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              GridView.builder(
+                                itemCount: homeList.length - 2,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final int count = homeList.length - 1;
+                                  final Animation<double> animation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                    CurvedAnimation(
+                                      parent: animationController!,
+                                      curve: Interval((1 / count) * index, 1.0,
+                                          curve: Curves.fastOutSlowIn),
+                                    ),
+                                  );
+                                  animationController?.forward();
+                                  return HomeListView(
+                                    animation: animation,
+                                    animationController: animationController,
+                                    listData: homeList[index],
+                                    callBack: () {
+                                      Navigator.push<dynamic>(
+                                        context,
+                                        MaterialPageRoute<dynamic>(
+                                          builder: (BuildContext context) =>
+                                          homeList[index].navigateScreen!,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: multiple ? 2 : 1,
+                                  mainAxisSpacing: screenHeight * 0.02,
+                                  crossAxisSpacing: screenWidth * 0.08,
+                                  childAspectRatio: multiple ? screenWidth / (screenHeight * 0.34) : 12,
+                                ),
                               ),
-                            ),
-                            GridView.builder(
-                              itemCount:2,
-                              shrinkWrap: true,
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
-                              physics: const NeverScrollableScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (BuildContext context, int index) {
-                                int actualIndex = homeList.length - 2 + index;
-                                final Animation<double> animation =
-                                Tween<double>(begin: 0.0, end: 1.0).animate(
-                                  CurvedAnimation(
-                                    parent: animationController!,
-                                    curve: Curves.fastOutSlowIn,
-                                  ),
-                                );
-                                animationController?.forward();
-                                return HomeListView(
-                                  animation: animation,
-                                  animationController: animationController,
-                                  listData: homeList[actualIndex],
-                                  callBack: () {
-                                    Navigator.push<dynamic>(
-                                      context,
-                                      MaterialPageRoute<dynamic>(
-                                        builder: (BuildContext context) =>
-                                        homeList[actualIndex].navigateScreen!,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                mainAxisSpacing: screenHeight * 0.02,
-                                crossAxisSpacing: screenWidth * 0.02,
-                                childAspectRatio: multiple ? screenWidth / (screenHeight * 0.23) : 8,
+                              GridView.builder(
+                                itemCount:2,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.02),
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (BuildContext context, int index) {
+                                  int actualIndex = homeList.length - 2 + index;
+                                  final Animation<double> animation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                    CurvedAnimation(
+                                      parent: animationController!,
+                                      curve: Curves.fastOutSlowIn,
+                                    ),
+                                  );
+                                  animationController?.forward();
+                                  return HomeListView(
+                                    animation: animation,
+                                    animationController: animationController,
+                                    listData: homeList[actualIndex],
+                                    callBack: () {
+                                      Navigator.push<dynamic>(
+                                        context,
+                                        MaterialPageRoute<dynamic>(
+                                          builder: (BuildContext context) =>
+                                          homeList[actualIndex].navigateScreen!,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  mainAxisSpacing: screenHeight * 0.02,
+                                  crossAxisSpacing: screenWidth * 0.02,
+                                  childAspectRatio: multiple ? screenWidth / (screenHeight * 0.23) : 8,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -205,7 +248,7 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'Klala, WILLKOMMEN\nZURÜCK ',
+                    '${globals.userName}, WILLKOMMEN\nZURÜCK ',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,

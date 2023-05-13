@@ -3,7 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:thws_study_helfer/login/Logout.dart';
 import '../app_theme.dart';
+import 'package:thws_study_helfer/model/globals.dart' as globals;
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer(
@@ -21,16 +23,39 @@ class HomeDrawer extends StatefulWidget {
   _HomeDrawerState createState() => _HomeDrawerState();
 }
 
-//___________________________________________________
 
 class _HomeDrawerState extends State<HomeDrawer> {
 
-  String userName = 'Klala Chikhi' ;
+  String userName = 'YoOor Name .. :) ' ;
+
   void updateUserName(String newName, String userId) {
     DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('users');
     usersRef.child(userId).set({'name': newName});
+    globals.userName = newName;
+  }
+//--------------------------------------------------------------------
+  Future<void> getUserName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('users');
+      DataSnapshot dataSnapshot = (await usersRef.child(user.uid).once()).snapshot;
+
+      if (dataSnapshot.value is Map<dynamic, dynamic>) {
+        Map<dynamic, dynamic> values = dataSnapshot.value as Map<dynamic, dynamic>;
+        setState(() {
+          userName = values['name'] ?? 'Unbekannter Name';
+          globals.userName = userName;
+        });
+      }
+
+    }
   }
 
+
+
+
+
+//--------------------------------------------------------------------
   Future<void> showEditNameDialog(BuildContext context, String currentName, String userId) async {
     TextEditingController nameController = TextEditingController(text: currentName);
 
@@ -72,21 +97,16 @@ class _HomeDrawerState extends State<HomeDrawer> {
       },
     );
   }
-
-
-
-
-
-
-
-
+  //----------------------------------------------------------
   List<DrawerList>? drawerList;
   @override
   void initState() {
+    getUserName();
     setDrawerListArray();
     super.initState();
   }
 
+//-------------------------------------------------
   void setDrawerListArray() {
     drawerList = <DrawerList>[
       DrawerList(
@@ -117,8 +137,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
         icon: Icon(Icons.info),
       ),
       DrawerList(
-        index: DrawerIndex.Datei,
-        labelName: 'Datei',
+        index: DrawerIndex.ToDoList,
+        labelName: 'Your ToDo List',
         icon: Icon(Icons.file_copy_sharp),
       ),
     ];
@@ -269,7 +289,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
 
   void onTapped() {
-    print('Doing Something...'); // Print to console.
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>LogoutPage()
+          // SignUPScreen()
+        ));
+
+    // Print to console.
   }
 //------------------------------------------------------
 
@@ -390,7 +417,7 @@ enum DrawerIndex {
   Invite,
   Testing,
   Video ,
-  Datei
+  ToDoList
 }
 
 class DrawerList {

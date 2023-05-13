@@ -171,8 +171,25 @@ Widget build(BuildContext context) {
   double scaleFactor = MediaQuery.of(context).textScaleFactor;
 
   return Scaffold(
-    backgroundColor: Color(0xFF111010),
+   // backgroundColor: Color(0xFF111010),
     body: Container(
+      decoration: const BoxDecoration(
+
+        borderRadius: BorderRadius.horizontal(
+          left: Radius.circular(10),
+          right: Radius.circular(10),
+
+        ),
+        gradient: LinearGradient(
+          colors: [
+            // Color(0xFFDADDDF)
+            Color(0xFF272928),
+            Color(0xFF4D5D68),
+          ],
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+        ),
+      ),
       /*
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -211,6 +228,7 @@ Widget build(BuildContext context) {
                             Icon(Icons.insert_drive_file, size: _h * 0.050, color: Colors.white),
                             SizedBox(width: _w * 0.05),
                             Expanded(child: Text(_fileNames[index], style: TextStyle(fontSize: _h * 0.02 * scaleFactor, color: Colors.white))),
+                         /*
                             IconButton(
                               icon: Icon(Icons.download, color: Colors.white),
                               onPressed: () async {
@@ -266,6 +284,8 @@ Widget build(BuildContext context) {
 
                                 }
                               })
+
+                          */
   ]
                       ),
                       onTap: () async {
@@ -313,13 +333,16 @@ Widget build(BuildContext context) {
                 height: screenWidth * 0.07,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
+                  /*
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
+                      color: Colors.white,
                       offset: Offset(0, 3),
                       blurRadius: 6,
                     ),
                   ],
+
+                   */
                 ),
                 child: ElevatedButton(
                   onPressed: _uploadFile,
@@ -336,7 +359,7 @@ Widget build(BuildContext context) {
                       children: [
                         SizedBox(width: 8),
                         Text(
-                          'Datei hochladen',
+                          'Upload a File',
                           style: TextStyle(color: Colors.white, fontSize: 16 * textScaleFactor),
                         ),
                       ],

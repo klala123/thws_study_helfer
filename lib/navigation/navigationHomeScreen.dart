@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../app_theme.dart';
+
 import '../custom_drawer/drawer_user_controller.dart';
 import '../scound_screens/feedback_screen.dart';
 import '../scound_screens/help_screen.dart';
@@ -8,6 +9,7 @@ import '../custom_drawer/home_drawer.dart';
 import '../StartScreen.dart';
 import '../scound_screens/invite_friend_screen.dart';
 import '../folder/FolderHomeScreen.dart';
+import '../todo/TodoListPage.dart';
 
 
 class NavigationHomeScreen extends StatefulWidget {
@@ -59,9 +61,10 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       drawerIndex = drawerIndexdata;
       switch (drawerIndex) {
         case DrawerIndex.HOME:
-          setState(() {
-            screenView =  StartScreen();
-          });
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => NavigationHomeScreen()),
+                  (route) => false
+          );
           break;
 
         case DrawerIndex.Help:
@@ -80,9 +83,11 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
             screenView = InviteFriend();
           });
           break;
-        case DrawerIndex.Datei:
+        case DrawerIndex.ToDoList:
           setState(() {
-            screenView = FolderHomeScreen();
+            screenView = TodoListPage () ;
+                //TodoList();
+                //FolderHomeScreen();
           });
 
           break;

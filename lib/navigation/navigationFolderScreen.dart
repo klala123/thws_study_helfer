@@ -1,12 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:thws_study_helfer/folder/FolderHomeScreen.dart';
+import 'package:thws_study_helfer/navigation/navigationHomeScreen.dart';
 import '../app_theme.dart';
 import '../custom_drawer/drawer_user_controller.dart';
 import '../scound_screens/feedback_screen.dart';
 import '../scound_screens/help_screen.dart';
 import '../custom_drawer/home_drawer.dart';
 import '../StartScreen.dart';
+import '../todo/TodoListPage.dart';
 import '../videoCall/VideoHomeScreen.dart';
 import '../scound_screens/invite_friend_screen.dart';
 
@@ -59,9 +61,16 @@ class _NavigationFolderScreenState extends State<NavigationFolderScreen> {
       drawerIndex = drawerIndexdata;
       switch (drawerIndex) {
         case DrawerIndex.HOME:
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => NavigationHomeScreen()),
+                  (route) => false
+          );
+           /*
           setState(() {
             screenView =  StartScreen();
           });
+
+            */
           break;
 
         case DrawerIndex.Video:
@@ -83,6 +92,13 @@ class _NavigationFolderScreenState extends State<NavigationFolderScreen> {
         case DrawerIndex.Invite:
           setState(() {
             screenView = InviteFriend();
+          });
+          break;
+        case DrawerIndex.ToDoList:
+          setState(() {
+            screenView = TodoListPage () ;
+            //TodoList();
+            //FolderHomeScreen();
           });
           break;
         default:
