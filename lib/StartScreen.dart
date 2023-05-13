@@ -15,14 +15,14 @@ class StartScreen extends StatefulWidget {
   @override
   _StartScreenState createState() => _StartScreenState();
 }
-
+//----------------------------------------------------------------------------------
 // Die klasse erhält die Fähigkeit, Ticker bereitzustellen, die von Animation verwendet werden
 class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin {
   List<HomeList> homeList = HomeList.homeList;
   // Um die Animation zu steueren (Bsp : stoppen, starten,umkeren)
   AnimationController? animationController;
   bool multiple = true;
-
+//----------------------------------------------------------------------------------
   Stream<String> getUserNameStream() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -34,7 +34,7 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
     }
     return Stream.value('Unbekannter Name');
   }
-
+//----------------------------------------------------------------------------------
   @override
   void initState() {
     animationController = AnimationController(
@@ -43,12 +43,12 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
     getUserNameStream();
     super.initState();
   }
-
+//----------------------------------------------------------------------------------
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 0));
     return true;
   }
-
+//----------------------------------------------------------------------------------
   // Um elemente aus dem Widget Baum zu entfernen
   /*
   Das Aufrufen von dispose() auf dem animationController gibt die Ressourcen frei,
@@ -60,8 +60,6 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
     animationController?.dispose();
     super.dispose();
   }
-
-
 
 //-------------------------------------------------------------------------------
 
@@ -124,8 +122,6 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
                                    return  appBar(appBarHeight, iconSize);
                                }
                              }, ) ,
-
-
 
                       Expanded(
                         child: SingleChildScrollView(

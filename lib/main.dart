@@ -34,12 +34,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: !kIsWeb && Platform.isAndroid ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
     return MaterialApp(
@@ -70,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 //------------------------------------------------
+
   Future<void> videosData(String? lastKey) async {
     Query query = dbRef.orderByKey();
 
@@ -127,8 +122,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-
-
 //-----------------------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -138,10 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
         if (snapshot.hasData) {
           VideoList.homeList.add(snapshot.data!);
         }
-
-
-
-
          if (AuthService().user != null) return NavigationHomeScreen();
         else return LoginScreen();
 

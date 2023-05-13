@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -9,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'VideoList.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 
 class VideoHomeScreen extends StatefulWidget {
   const VideoHomeScreen({Key? key}) : super(key: key);
@@ -31,27 +29,12 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
   bool checkNeuElement = false ;
 
 //-------------------------------------------------------------------------------------
-// Funktion zum Auswählen eines Bildes aus der Galerie
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImagePath = pickedFile.path;
-      });
-    }
-  }
-
-
-//-------------------------------------------------------------------------------------
 
   @override
   void initState() {
     animationController = AnimationController(
       // vsync : this --> Verbindet Animation Controller mit der Tickerprovider der Klasse _MyHomePageState
         duration: const Duration(milliseconds: 1500), vsync: this);
-    //_searchFieldFocusNode = FocusNode();
     super.initState();
   }
 //-------------------------------------------------------------------------------------
@@ -69,21 +52,13 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
   @override
   void dispose() {
     animationController?.dispose();
-  //  _searchFieldFocusNode.dispose();
     super.dispose();
   }
 //-------------------------------------------------------------------------------------
-
   String searchText = '';
   //FocusNode _searchFieldFocusNode = FocusNode();
-
   TextEditingController _searchController = TextEditingController();
-
-  void _filterGroupList(String searchQuery) {
-    setState(() {
-      searchText = searchQuery;
-    });
-  }
+//----------------------------------------------------------------------------------
 
   TextField getTextField (){
     return    TextField(
@@ -128,7 +103,6 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
    // Fetch Data
     final DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
     String? groupId;
-
     await databaseReference
         .child('data')
         .orderByChild('id')
@@ -151,11 +125,12 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
     });
 
     if(groupId != null ){
-      _delet(groupId!);
+      _deletFromFirebase(groupId!);
     }
   }
 
-  void _delet(String key ) {
+ //----------------------------------------------------------------------------------
+  void _deletFromFirebase(String key ) {
     final DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
     databaseReference.child('data').child(key).remove().then((_) {
       print('Gruppe mit Key $key wurde erfolgreich gelöscht');
@@ -165,17 +140,12 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
   }
   //------------------------------------------------------
 
-
-
-
   @override
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isLightMode = brightness == Brightness.light;
-
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
     double horizontalPadding = screenWidth * 0.08;
     double gridViewSpacing = screenHeight * 0.02;
     double childAspectRatio = 3;
@@ -189,12 +159,6 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
       ),
       body: Container(
         decoration: const BoxDecoration(
-
-         // borderRadius: BorderRadius.horizontal(
-           // left: Radius.circular(10),
-            //right: Radius.circular(10),
-
-         // ),
           gradient: LinearGradient(
             colors: [
               // Color(0xFFDADDDF)
@@ -205,15 +169,6 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
             end: Alignment.centerLeft,
           ),
         ),
-        /*
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/hintergrundBild.png'),
-            fit: BoxFit.cover,
-          ),
-
-        ),
-        */
         child: Column(
           children: [
             Padding(
@@ -337,26 +292,12 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
           ],
         ),
       ),
-      /*
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddVideoCallGroupp()),
-          );
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-
-       */
       floatingActionButton: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           double screenWidth = MediaQuery.of(context).size.width;
           double buttonWidth = screenWidth * 0.25; // 50% der Bildschirmbreite
           // 50% der Bildschirmbreite
           double textScaleFactor = MediaQuery.of(context).textScaleFactor;
-
           return Container(
             width: buttonWidth,
             height: 40,
@@ -399,15 +340,7 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
       ),
     );
   }
-
-
-
-
-
-
-
 //-------------------------------------------------------------------------------------
-
   Widget appBar() {
 
     var brightness = MediaQuery.of(context).platformBrightness;
@@ -431,7 +364,6 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
         ),
       ),
       child: SizedBox(
-
         height: AppBar().preferredSize.height,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -468,11 +400,9 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
                // color: Colors.black,
                 //isLightMode ? Colors.white : AppTheme.nearlyBlack,
 
-
               ),    ),   ], ),
       ),
     ); }
-
 
 }
 

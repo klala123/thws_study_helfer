@@ -9,7 +9,7 @@ class AddVideoCallGroupp extends StatefulWidget {
   @override
   State<AddVideoCallGroupp> createState() => AddVideoCallGrouppState();
 }
-
+//----------------------------------------------------------------------------------
 class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProviderStateMixin {
  // static List<videoHomeList> homeList1 = [ ] ;
   List<VideoList> homeList = VideoList.homeList;
@@ -21,7 +21,7 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
   DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('data');
   late AnimationController _animationController;
   late Animation<double> _animation;
-
+//----------------------------------------------------------------------------------
   @override
   void initState() {
     super.initState();
@@ -29,13 +29,13 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _animation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubic);
   }
-
+//----------------------------------------------------------------------------------
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-
+//----------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     _animationController.forward();
@@ -59,14 +59,6 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
             end: Alignment.centerLeft,
           ),
         ),
-        /*
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/hintergrundBild.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-         */
         child: SingleChildScrollView(
           child: Center(
             child: ConstrainedBox(
@@ -148,13 +140,10 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
       ),
     );
   }
-
+//----------------------------------------------------------------------------------
 
   uploadFile() async {
-
     try {
-
-      //-----------------------------------------
       UserData user = UserData(name: name.text) ;
       url = "assets/images/ElementHintergrund.png";
       Map<String, dynamic> contact = {
@@ -170,7 +159,7 @@ class AddVideoCallGrouppState extends State<AddVideoCallGroupp> with TickerProvi
     } on Exception catch (e) {    print(e);   }
 
   }
-
+//----------------------------------------------------------------------------------
   getImage() async {
     var img = await image.pickImage(source: ImageSource.gallery);
     setState(() {

@@ -32,30 +32,6 @@ class VideoList {
     return eingabe.replaceAll("\\s", "");
   }
 
-
-  static void addInitData (){
-    homeList.addAll( [
-      VideoList(
-        imagePath: 'assets/images/ElementHintergrund.png',
-        isFromGallery: false,
-        title: 'Algebra Gruppe ',
-        navigateScreen: JoinVideoScreen(title: 'Algebra', conferenceID: '11',),
-      ),
-      VideoList(
-          imagePath: 'assets/images/ElementHintergrund.png',
-          isFromGallery: false,
-          title: 'Prog Gruppe ',
-          navigateScreen: JoinVideoScreen(title: 'Prog2', conferenceID: '12',)
-      ),
-      VideoList(
-          imagePath: 'assets/images/ElementHintergrund.png',
-          isFromGallery: false,
-          title: 'Datenbank Gruppe ',
-          navigateScreen: JoinVideoScreen(title: 'Datenbank', conferenceID: '14',)
-      ),
-    ]);
-  }
-
 //---------------------------------------------------------------
   static Future<void> init() async {
     // Add initial data

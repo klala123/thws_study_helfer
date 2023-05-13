@@ -9,7 +9,7 @@ class JoinVideoScreen extends StatefulWidget {
   @override
   State<JoinVideoScreen> createState() => _JoinVideoScreenState();
 }
-
+//----------------------------------------------------------------------------------
 class _JoinVideoScreenState extends State<JoinVideoScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -23,28 +23,21 @@ class _JoinVideoScreenState extends State<JoinVideoScreen> with SingleTickerProv
     _animation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
     _animationController.forward();
   }
-
+//----------------------------------------------------------------------------------
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
 
-
+//----------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-
     return Container(
         child: Scaffold(
           body:
           Container(
             decoration: const BoxDecoration(
-
-              // borderRadius: BorderRadius.horizontal(
-              // left: Radius.circular(10),
-              //right: Radius.circular(10),
-
-              // ),
               gradient: LinearGradient(
                 colors: [
                   // Color(0xFFDADDDF)
@@ -59,20 +52,6 @@ class _JoinVideoScreenState extends State<JoinVideoScreen> with SingleTickerProv
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:  [
-                  /*
-                  ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey) ),
-
-                      onPressed: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VideoCallSettings(conferenceID: widget.conferenceID)
-                            ))
-                      },
-                      child: const Text("Join Live")),
-
-                   */
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.blueGrey),
@@ -99,8 +78,6 @@ class _JoinVideoScreenState extends State<JoinVideoScreen> with SingleTickerProv
                       child: const Text("Join Live", style: TextStyle(fontSize: 20)),
                     ),
                   )
-
-
                 ],
               ),
             ),
