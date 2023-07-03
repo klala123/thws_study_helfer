@@ -110,7 +110,7 @@ class _AddTodoState extends State<AddTodo>  with SingleTickerProviderStateMixin 
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Add Todo',
+                    'Neue ToDo erstellen',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -125,7 +125,7 @@ class _AddTodoState extends State<AddTodo>  with SingleTickerProviderStateMixin 
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: 'Title',
+                        hintText: 'Title deines ToDos',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
@@ -150,7 +150,7 @@ class _AddTodoState extends State<AddTodo>  with SingleTickerProviderStateMixin 
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: 'Description',
+                        hintText: 'Beschreibung',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
@@ -179,7 +179,7 @@ class _AddTodoState extends State<AddTodo>  with SingleTickerProviderStateMixin 
                     child: ListTile(
 
                       title: Text(
-                        'Date: ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
+                        'Datum: ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
                         style: TextStyle(color: Colors.black),
                       ),
                       trailing: Icon(Icons.calendar_today, color: Colors.black),
@@ -209,7 +209,7 @@ class _AddTodoState extends State<AddTodo>  with SingleTickerProviderStateMixin 
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: ListTile(
                       title: Text(
-                        'Time: ${_selectedTime.format(context)}',
+                        'Zeit: ${_selectedTime.format(context)}',
                         style: TextStyle(color: Colors.black),
                       ),
                       trailing: Icon(Icons.access_time, color: Colors.black),
@@ -239,7 +239,7 @@ class _AddTodoState extends State<AddTodo>  with SingleTickerProviderStateMixin 
                         _subtitleController.clear();
                       },
                       child: Text(
-                        "Add Todo",
+                        "Erstellen",
                         style: TextStyle(
                           color: Color.fromARGB(255, 255, 255, 255),
                           fontSize: 20,

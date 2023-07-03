@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'AddVideoCallGroupp.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'VideoList.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -23,13 +22,9 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
   // Um die Animation zu steueren (Bsp : stoppen, starten,umkeren)
   AnimationController? animationController;
   bool multiple = true;
-  TextEditingController _textController = TextEditingController();
-  String? _selectedImagePath;
-  String? _searchQuery;
   bool checkNeuElement = false ;
-
+  String searchText = '';
 //-------------------------------------------------------------------------------------
-
   @override
   void initState() {
     animationController = AnimationController(
@@ -38,28 +33,14 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
     super.initState();
   }
 //-------------------------------------------------------------------------------------
-  Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 0));
-    return true;
-  }
-//-------------------------------------------------------------------------------------
-  // Um elemente aus dem Widget Baum zu entfernen
-  /*
-  Das Aufrufen von dispose() auf dem animationController gibt die Ressourcen frei,
-  die von diesem AnimationController belegt wurden,
-   */
-
   @override
   void dispose() {
     animationController?.dispose();
     super.dispose();
   }
-//-------------------------------------------------------------------------------------
-  String searchText = '';
-  //FocusNode _searchFieldFocusNode = FocusNode();
-  TextEditingController _searchController = TextEditingController();
-//----------------------------------------------------------------------------------
 
+
+//----------------------------------------------------------------------------------
   TextField getTextField (){
     return    TextField(
       onChanged: (value) {
@@ -68,9 +49,9 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
         });
       },
       decoration: InputDecoration (
-        labelText: 'Search',
+        labelText: 'Suche',
         labelStyle: TextStyle(color: Colors.white),
-        hintText: 'Enter a search term',
+        hintText: 'Suchbegriff eingeben',
         hintStyle: TextStyle(color: Colors.blueGrey),
         prefixIcon: Icon(Icons.search, color: Colors.white), // Update the icon color
         border: OutlineInputBorder(
@@ -98,9 +79,7 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
     );
   }
 //----------------------------------------------------
-
   Future<void> _deleteGroup(String groupName) async {
-   // Fetch Data
     final DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
     String? groupId;
     await databaseReference
@@ -292,70 +271,27 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
           ],
         ),
       ),
-      floatingActionButton: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          double screenWidth = MediaQuery.of(context).size.width;
-          double buttonWidth = screenWidth * 0.25; // 50% der Bildschirmbreite
-          // 50% der Bildschirmbreite
-          double textScaleFactor = MediaQuery.of(context).textScaleFactor;
-          return Container(
-            width: buttonWidth,
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 3),
-                  blurRadius: 6,
-                ),
-              ],
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddVideoCallGroupp()) ) ;
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blueGrey,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: 8),
-                  Text(
-                    'Erstellen',
-                    style: TextStyle(color: Colors.white, fontSize: 14 * MediaQuery.of(context).textScaleFactor),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+      floatingActionButton: FloatingActionButton(
+        onPressed:() => {
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddVideoCallGroupp()) )     },
+        child: Icon(Icons.add_comment_rounded  ,
+          size: MediaQuery.of(context).size.width* 0.08,),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        splashColor: Colors.transparent,
+
       ),
+
     );
   }
 //-------------------------------------------------------------------------------------
   Widget appBar() {
-
-    var brightness = MediaQuery.of(context).platformBrightness;
-    bool isLightMode = brightness == Brightness.light;
     return Container(
       decoration: const BoxDecoration(
-
-        // borderRadius: BorderRadius.horizontal(
-        // left: Radius.circular(10),
-        //right: Radius.circular(10),
-
-        // ),
         gradient: LinearGradient(
           colors: [
-            // Color(0xFFDADDDF)
             Color(0xFF272928),
             Color(0xFF4D5D68),
           ],
@@ -371,7 +307,6 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
             Padding(
               padding: const EdgeInsets.only(top: 8, left: 8),
               child: Container(
-
                 width: AppBar().preferredSize.height - 8,
                 height: AppBar().preferredSize.height - 8,
               ),
@@ -385,7 +320,6 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).textScaleFactor * 14,
                       color: Colors.white ,
-                      //isLightMode ? AppTheme.darkText : AppTheme.white,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -397,21 +331,15 @@ class _VideoHomeScreenState extends State<VideoHomeScreen> with TickerProviderSt
               child: Container(
                 width: AppBar().preferredSize.height - 8,
                 height: AppBar().preferredSize.height - 8,
-               // color: Colors.black,
-                //isLightMode ? Colors.white : AppTheme.nearlyBlack,
-
               ),    ),   ], ),
       ),
     ); }
 
 }
-
 //-------------------------------------------------------------------------------------
-
 class HomeListView extends StatelessWidget {
   const HomeListView(
       {Key? key,
-
         this.listData,
         this.callBack,
         this.animationController,
@@ -430,20 +358,12 @@ class HomeListView extends StatelessWidget {
     final DatabaseReference groupRef = FirebaseDatabase.instance.reference().child('groups');
     groupRef.child(groupKey).remove();
   }
-
-
   @override
   Widget build(BuildContext context) {
-    // Bildschirmgröße und Skalierungsfaktor
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-
-    // Dynamische Schriftgröße, Abstände und Größen
     final fontSize = 20.0 * textScaleFactor;
     final borderRadius = 30.0 * (screenWidth / 400);
-    final padding = EdgeInsets.all(8 * (screenWidth / 400));
-
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -456,8 +376,7 @@ class HomeListView extends StatelessWidget {
               aspectRatio: 1.5,
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
+                child: Stack( alignment: AlignmentDirectional.center,
                   children: <Widget>[
                     Positioned.fill(
                       child: listData!.isFromGallery
@@ -534,24 +453,9 @@ class HomeListView extends StatelessWidget {
                                 Icons.delete,
                                 color: Colors.white,
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+                            ),   ), ),  ),  )  ], ), ), ), ),); }, ); }
 }
 
-
-//-----------------------------------------------------------
 
 
 

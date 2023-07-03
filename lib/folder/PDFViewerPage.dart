@@ -2,18 +2,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 
-class PdfViewerPage extends StatefulWidget {
+class FileViewerPage extends StatefulWidget {
   final File file;
-
-  PdfViewerPage({required this.file});
-
+  FileViewerPage({required this.file});
   @override
-  _PdfViewerPageState createState() => _PdfViewerPageState();
+  _FileViewerPageState createState() => _FileViewerPageState();
 }
 
-class _PdfViewerPageState extends State<PdfViewerPage> {
+class _FileViewerPageState extends State<FileViewerPage> {
   String? _fileExtension;
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +26,6 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   void _openFileAndPop(BuildContext context, String filePath) async {
     final result = await OpenFile.open(filePath);
     if (result.type != ResultType.done) {
-      // Fehler beim Öffnen der Datei
       print("Fehler beim Öffnen der Datei: ${result.message}");
     }
     Navigator.pop(context);

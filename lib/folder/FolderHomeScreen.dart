@@ -1,17 +1,11 @@
-
-
 import 'dart:math';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import 'Folder.dart';
 import 'FileHomeScreen.dart';
-
-
 class FolderHomeScreen extends StatefulWidget {
   @override
   _FolderHomeScreenState createState() => _FolderHomeScreenState();
@@ -22,10 +16,7 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Folder> _filteredFolders = [];
   DatabaseReference? _folderRef;
-  String _searchQuery = '';
   PageController _pageController = PageController();
-
-
 
   @override
   void initState() {
@@ -34,8 +25,6 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
     _searchController.addListener(_onSearchChanged);
     _filteredFolders = List.from(_folders);
   }
-
-
 
   void _filterFolders() {
     setState(() {
@@ -68,16 +57,13 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
     super.dispose();
   }
 
-
   Future<void> _initializeFirebase() async {
     await Firebase.initializeApp();
     _folderRef = FirebaseDatabase.instance.reference().child('folders');
     _getFolderList();
   }
 
-
   Future<void> _getFolderList() async {
-
     _folderRef!.onChildAdded.listen((event) {
       Map<dynamic, dynamic> value = event.snapshot.value as Map<dynamic, dynamic>;
       Folder newFolder = Folder(name: value['name'] ?? '', key: event.snapshot.key!);
@@ -86,7 +72,6 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
         _filteredFolders = List.from(_folders);
       });
     });
-
     _folderRef!.onChildRemoved.listen((event) {
       Folder removedFolder = _folders.firstWhere((folder) => folder.key == event.snapshot.key);
       setState(() {
@@ -95,10 +80,8 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
       });
     });
   }
-
   Future<void> _createFolder() async {
     TextEditingController folderNameController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -112,8 +95,7 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
             TextButton(
               child: Text("Abbrechen"),
               onPressed: () {
-                Navigator.of(context).pop();
-              },
+                Navigator.of(context).pop();   },
             ),
             TextButton(
               child: Text("Erstellen"),
@@ -123,47 +105,31 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
                 setState(() {
                   _folders.add(Folder(
                       name: folderNameController.text, key: folderRef.key!));
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+                });   Navigator.of(context).pop();
+              },   ),
+          ], );
+      }, );
   }
-
-  //---------------------------------
 
   @override
   Widget build(BuildContext context) {
-
-    // Bildschirmgröße und Skalierungsfaktoren
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double textScaleFactor = MediaQuery.of(context).textScaleFactor;
     // Anpassbare Größen und Abstände
     double textFieldWidth = screenWidth * 0.7;
     double textFieldHeight = screenHeight * 0.07;
     double gridPaddingHorizontal = screenWidth * 0.05;
     double gridPaddingVertical = screenHeight * 0.025;
-    double iconSize = screenWidth * 0.075;
-    double textSize = 18.0 * textScaleFactor;
-
     return Scaffold(
-      backgroundColor: Color(0xFF111010),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: gridPaddingHorizontal, vertical: screenHeight * 0.06),
+        padding: EdgeInsets.only(top: screenHeight * 0.10 , left: gridPaddingHorizontal, right: gridPaddingHorizontal), // Increase the top padding to move content down
         decoration: const BoxDecoration(
-
           borderRadius: BorderRadius.horizontal(
             left: Radius.circular(10),
             right: Radius.circular(10),
-
           ),
           gradient: LinearGradient(
             colors: [
-              // Color(0xFFDADDDF)
               Color(0xFF272928),
               Color(0xFF4D5D68),
             ],
@@ -175,28 +141,23 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: gridPaddingHorizontal, vertical: gridPaddingVertical),
-
               child: Container(
                 width: textFieldWidth,
                 height: textFieldHeight,
-
               child: TextField(
                   onChanged: (value) {
-                    _filterFolders();
-                  },
+                    _filterFolders();  },
                   controller: _searchController,
                   decoration: InputDecoration (
-                    labelText: 'Search',
+                    labelText: 'Suche',
                     labelStyle: TextStyle(color: Colors.white),
-                    hintText: 'Enter a search term',
+                    hintText: 'Suchbegriff eingeben',
                     hintStyle: TextStyle(color: Colors.blueGrey),
                     prefixIcon: Icon(Icons.search, color: Colors.white), // Update the icon color
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(25.0),
-                      ),
-                    ),
-
+                      ),),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(25.0),
@@ -212,15 +173,12 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
                     contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                   ),
                   style: TextStyle(fontSize:  MediaQuery.of(context).textScaleFactor *16, color: Colors.white),
-                ),
-              ),
-            ),
+                ), ), ),
             SizedBox(height: screenWidth * 0.02),
             Expanded(
               child: AnimationLimiter(
                 child: Column(
-                  children: [
-                    Expanded(
+                  children: [  Expanded(
                       child: PageView.builder(
                         controller: _pageController,
                         scrollDirection: Axis.horizontal,
@@ -234,7 +192,7 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 childAspectRatio: 2,
-                                mainAxisSpacing: 9.0,
+                                mainAxisSpacing: screenHeight * 0.04,
                                 crossAxisSpacing: 9.0,
                               ),
                               itemBuilder: (BuildContext context, int index) {
@@ -260,38 +218,34 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               Container(
-                                                height: MediaQuery.of(context).size.height * 0.08,
-                                                width: MediaQuery.of(context).size.width * 0.08,
-                                                child: Stack(
-                                                  children: [
-                                                    Align(
-                                                      alignment: Alignment.center,
-                                                      child: Icon(
-                                                        Icons.folder,
-                                                        size: iconSize ,
-                                                        color: Colors.white,
-                                                      ),
+                                                alignment: Alignment.center,
+                                                height: MediaQuery.of(context).size.height * 0.06, // 6% der Bildschirmhöhe für das Icon
+                                                child: Icon(
+                                                  Icons.folder,
+                                                  size: screenWidth * 0.13,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(height: screenHeight * 0.01), // You might want to adjust this
+                                              Flexible(
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  height: MediaQuery.of(context).size.height * 0.03, // 2% der Bildschirmhöhe für den Text
+                                                  child: Text(
+                                                    folder.name,
+                                                    textAlign: TextAlign.center,
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: MediaQuery.of(context).textScaleFactor * 16,
                                                     ),
-                                                    Align(
-                                                      alignment: Alignment.bottomCenter,
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(bottom: 0.0, top: 30),
-                                                        child: Text(
-                                                          folder.name,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize:  MediaQuery.of(context).textScaleFactor * 14 ,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ),
+                                        ),),
                                     ),
                                   ),
                                 );
@@ -321,52 +275,13 @@ class _FolderHomeScreenState extends State<FolderHomeScreen> {
           ],
         ),
       ),
-      floatingActionButton: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          double screenWidth = MediaQuery.of(context).size.width;
-          double buttonWidth = screenWidth * 0.25; // 50% der Bildschirmbreite
-          // 50% der Bildschirmbreite
-          double textScaleFactor = MediaQuery.of(context).textScaleFactor;
-
-          return Container(
-            width: buttonWidth,
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 3),
-                  blurRadius: 6,
-                ),
-              ],
-            ),
-            child: ElevatedButton(
-              onPressed: _createFolder,
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blueGrey,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: 8),
-                  Text(
-                    'Erstellen',
-                    style: TextStyle(color: Colors.white, fontSize: 14 * MediaQuery.of(context).textScaleFactor),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createFolder,
+        child: Icon(Icons.add_comment_rounded  ,
+    size: MediaQuery.of(context).size.width* 0.07,),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        splashColor: Colors.transparent,
+      ), );
   }
-
-
-
 }

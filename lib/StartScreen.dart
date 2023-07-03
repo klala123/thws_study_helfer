@@ -23,18 +23,24 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
   AnimationController? animationController;
   bool multiple = true;
 //----------------------------------------------------------------------------------
+
   Stream<String> getUserNameStream() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       DatabaseReference usersRef = FirebaseDatabase.instance.reference().child('users');
       return usersRef.child(user.uid).onValue.map((event) {
-        Map<dynamic, dynamic> values = event.snapshot.value as Map<dynamic, dynamic>;
-        return values['name'] ?? 'Unbekannter Name';
+        if (event.snapshot.value != null) {
+          Map<dynamic, dynamic> values = event.snapshot.value as Map<dynamic, dynamic>;
+          return values['name'] ?? 'Unbekannter Name';
+        } else {
+          return 'Unbekannter Name';
+        }
       });
     }
     return Stream.value('Unbekannter Name');
   }
-//----------------------------------------------------------------------------------
+
+  //----------------------------------------------------------------------------------
   @override
   void initState() {
     animationController = AnimationController(
@@ -220,70 +226,87 @@ class _StartScreenState extends State<StartScreen> with TickerProviderStateMixin
   }
 
 //----------------------------------------------------------------
+
   Widget appBar(double appBarHeight, double iconSize) {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isLightMode = brightness == Brightness.light;
     double screenWidth = MediaQuery.of(context).size.width;
-    double textSize = screenWidth * 0.04;
-    return SizedBox(
-      height: appBarHeight,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 8, left: 8),
-            child: Container(
-              width: AppBar().preferredSize.height - 8,
-              height: AppBar().preferredSize.height - 8,
-            ),
-          ),
-          Expanded(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4, bottom: 9),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${globals.userName}, WILLKOMMEN\nZURÜCK ',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: textSize,
-                      fontWeight: FontWeight.bold,
+    double textSize = screenWidth * 0.055;
+
+    return StreamBuilder<String>(
+      stream: getUserNameStream(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        String displayName = 'Willkommen';
+        if (snapshot.hasData && snapshot.data != 'Unbekannter Name') {
+          displayName = '${snapshot.data}, WILLKOMMEN \nZURÜCK';
+        }
+
+        return SizedBox(
+          height: appBarHeight,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 10, left: 0),
+                child: Container(
+                  width: AppBar().preferredSize.height - 8,
+                  height: AppBar().preferredSize.height - 8,
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15, bottom: 9, left : 0 ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        displayName,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: textSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Container(
-              width: AppBar().preferredSize.height - 8,
-              height: AppBar().preferredSize.height - 8,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius:
-                  BorderRadius.circular(AppBar().preferredSize.height),
-                  child: Icon(
-                    multiple ? Icons.dashboard : Icons.view_agenda,
-                    color: AppTheme.white,
-                    size: iconSize *0.7,
+
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Container(
+                  width: AppBar().preferredSize.height - 8,
+                  height: AppBar().preferredSize.height - 8,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius:
+                      BorderRadius.circular(AppBar().preferredSize.height),
+                      child: Icon(
+                        multiple ? Icons.dashboard : Icons.view_agenda,
+                        color: AppTheme.white,
+                        size: iconSize *0.001,
+                      ),
+                      onTap: () {
+
+                      },
+                    ),
                   ),
-                  onTap: () {
-                    setState(() {
-                      multiple = !multiple;
-                    });
-                  },
                 ),
               ),
-            ),
+
+
+
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
+
+
+
 }
 
 
@@ -306,7 +329,7 @@ class HomeListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double textSize = screenWidth * 0.025;
+    double textSize = screenWidth * 0.035;
 
     return AnimatedBuilder(
       animation: animationController!,

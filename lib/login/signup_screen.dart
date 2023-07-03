@@ -18,6 +18,7 @@ class SignUPScreen extends StatefulWidget {
 }
 
 class _SignUPScreenState extends State<SignUPScreen> {
+     ScaffoldMessenger?  scaffoldMessenger;
   final feature = ["Login", "Sign Up"];
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -29,6 +30,8 @@ class _SignUPScreenState extends State<SignUPScreen> {
 //______________________________________________-----
 
   Future<void> signUp(String email, String password) async {
+
+
     try {
       WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp();
@@ -45,6 +48,11 @@ class _SignUPScreenState extends State<SignUPScreen> {
     } on FirebaseAuthException catch (e) {
       print('Error: $e');
       // Handle error (z. B. Benutzer informieren)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fehler: $e'),
+        ),
+      );
     }
   }
 
@@ -52,6 +60,7 @@ class _SignUPScreenState extends State<SignUPScreen> {
 //______________________________________________-----
   @override
   Widget build(BuildContext context) {
+
 
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
@@ -276,6 +285,11 @@ class _SignUPScreenState extends State<SignUPScreen> {
                                             } else {
                                               print('Passwords do not match');
                                               // Handle error (z. B. Benutzer informieren)
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('Fehler: Passwords do not match'),
+                                                ),
+                                              );
                                             }
                                           },
                                           child: Container(

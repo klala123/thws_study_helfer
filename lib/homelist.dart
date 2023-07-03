@@ -69,13 +69,13 @@ class HomeList {
     ),
 
     HomeList(
-      title: 'Grupppen Learning',
+      title: 'Gemeinsamer Lern-Call',
      imagePath: 'assets/images/gruppen.jpg',
       navigateScreen:NavigationVideoScreen(),
     ),
 
     HomeList(
-      title: 'Study Ordner',
+      title: 'Lernmaterialien',
      imagePath: 'assets/images/folder.jpg',
       navigateScreen: NavigationFolderScreen(),
     ),

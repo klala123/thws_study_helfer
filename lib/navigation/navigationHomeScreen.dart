@@ -81,11 +81,18 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           });
           break;
         case DrawerIndex.ToDoList:
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => TodoListPage()),
+
+          );
+          /*
           setState(() {
             screenView = TodoListPage () ;
                 //TodoList();
                 //FolderHomeScreen();
           });
+
+           */
 
           break;
         default:

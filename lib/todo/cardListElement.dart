@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 import 'package:intl/intl.dart';
 
-class CardWidget extends StatelessWidget {
+class CardListElement extends StatelessWidget {
   final String title;
   final String subtitle;
   final DateTime date;
@@ -11,7 +11,7 @@ class CardWidget extends StatelessWidget {
   final bool done;
   final VoidCallback onDone;
 
-  const CardWidget({
+  const CardListElement({
     Key? key,
     required this.title,
     required this.subtitle,
@@ -30,13 +30,13 @@ class CardWidget extends StatelessWidget {
       key: key ?? Key('swipeActionCell'),
       trailingActions: <SwipeAction>[
         SwipeAction(
-            title: "Done",
+            title: "Erledigt",
             onTap: (handler) {
               onDone();
             },
             color: done ? Colors.green : const Color(0xff5a7c92)),
         SwipeAction(
-            title: "Remove",
+            title: "Löschen",
             onTap: (handler) {
               onDelete();
             },

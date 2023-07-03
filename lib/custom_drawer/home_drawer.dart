@@ -111,12 +111,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
     drawerList = <DrawerList>[
       DrawerList(
         index: DrawerIndex.HOME,
-        labelName: 'Home',
+        labelName: 'StartSeite',
         icon: Icon(Icons.home),
       ),
       DrawerList(
         index: DrawerIndex.Help,
-        labelName: 'Help',
+        labelName: 'Hilfezentrum',
         isAssetsImage: true,
         imageName: 'assets/images/supportIcon.png',
       ),
@@ -127,18 +127,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
       ),
       DrawerList(
         index: DrawerIndex.Invite,
-        labelName: 'Invite Friend',
+        labelName: 'Freund einladen',
         icon: Icon(Icons.group),
       ),
 
       DrawerList(
         index: DrawerIndex.About,
-        labelName: 'About Us',
+        labelName: 'Über uns',
         icon: Icon(Icons.info),
       ),
       DrawerList(
         index: DrawerIndex.ToDoList,
-        labelName: 'Your ToDo List',
+        labelName: 'Deine To Do Liste',
         icon: Icon(Icons.file_copy_sharp),
       ),
     ];

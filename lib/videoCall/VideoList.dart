@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../model/UserData.dart';
 import 'JoinVideoScreen.dart';
 
 class VideoList {
@@ -23,19 +21,11 @@ class VideoList {
   String? key;
   String? groupKey;
 
-
   final databaseReference = FirebaseDatabase.instance.reference();
   static List<VideoList> homeList = [ ] ;
 
-  //---------------------------------------------------------------------
-  static String entferneLeerzeichen(String eingabe) {
-    return eingabe.replaceAll("\\s", "");
-  }
-
 //---------------------------------------------------------------
   static Future<void> init() async {
-    // Add initial data
-    //addInitData();
     DatabaseReference dbRef = FirebaseDatabase.instance.ref().child('data');
     DatabaseEvent event = await dbRef.once();
     DataSnapshot snapshot = event.snapshot;
@@ -51,7 +41,7 @@ class VideoList {
               groupKey: value['id'],
               isFromGallery: false,
               title: value['name'],
-              navigateScreen: JoinVideoScreen(title: value['name'], conferenceID:entferneLeerzeichen( value['name']),),
+              navigateScreen: JoinVideoScreen(title: value['name'], conferenceID:key,),
             )
         );
       });
@@ -78,7 +68,7 @@ class VideoList {
             title: value['name'],
             navigateScreen: JoinVideoScreen(
               title: value['name'],
-              conferenceID: entferneLeerzeichen( value['name']),
+              conferenceID: key,
             ),
           ));
         });
