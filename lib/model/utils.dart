@@ -1,5 +1,5 @@
 class Utils {
-  static int appId = 421000655;
-  static String appSignIn = "e831420950c0ebd2e0cee57cfba9b9fdfc1790baf3779a8ec3bd99b2658ecf4e";
+  static int appId = 622302260;
+  static String appSignIn = "59f2287567f8d8de7cea00b5c3dcced343faf78aab73e94201c34f18c36f9b53";
 
 }

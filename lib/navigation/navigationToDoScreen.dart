@@ -1,31 +1,32 @@
+
 import 'package:flutter/material.dart';
+import 'package:thws_study_helfer/folder/FolderHomeScreen.dart';
+import 'package:thws_study_helfer/navigation/navigationHomeScreen.dart';
 import '../app_theme.dart';
 import '../custom_drawer/drawer_user_controller.dart';
 import '../scound_screens/feedback_screen.dart';
 import '../scound_screens/help_screen.dart';
 import '../custom_drawer/home_drawer.dart';
-import '../StartScreen.dart';
-import '../scound_screens/invite_friend_screen.dart';
 import '../todo/TodoListPage.dart';
-import 'navigationToDoScreen.dart';
+import '../videoCall/VideoHomeScreen.dart';
+import '../scound_screens/invite_friend_screen.dart';
 
-
-class NavigationHomeScreen extends StatefulWidget {
+class NavigationToDoScreen extends StatefulWidget {
   @override
-  _NavigationHomeScreenState createState() => _NavigationHomeScreenState();
+  _NavigationToDoScreenState createState() => _NavigationToDoScreenState();
 }
-
-class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
+//----------------------------------------------------------------------------------
+class _NavigationToDoScreenState extends State<NavigationToDoScreen> {
   Widget? screenView;
   DrawerIndex? drawerIndex;
 
   @override
   void initState() {
-    drawerIndex = DrawerIndex.HOME;
-    screenView =  StartScreen();
+    drawerIndex = DrawerIndex.Video;
+    screenView =  TodoListPage();
     super.initState();
   }
-
+//----------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +35,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
         top: false,
         bottom: false,
         child: Scaffold(
-         // backgroundColor:   ThemeColor.createMaterialColor(Color(0xFFEDDDC9)) ,
+          // backgroundColor:   ,
           body: DrawerUserController(
 
 
@@ -63,38 +64,41 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
               MaterialPageRoute(builder: (context) => NavigationHomeScreen()),
                   (route) => false
           );
+          /*
+          setState(() {
+            screenView =  StartScreen();
+          });
+
+            */
+          break;
+
+        case DrawerIndex.Video:
+          setState(() {
+            screenView =  VideoHomeScreen();
+          });
           break;
 
         case DrawerIndex.Help:
           setState(() {
-       screenView = HelpScreen();
+            screenView = HelpScreen();
           });
           break;
         case DrawerIndex.FeedBack:
           setState(() {
-           screenView = FeedbackScreen();
+            screenView = FeedbackScreen();
           });
           break;
-
         case DrawerIndex.Invite:
           setState(() {
             screenView = InviteFriend();
           });
           break;
         case DrawerIndex.ToDoList:
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => NavigationToDoScreen ()),
-                 // TodoListPage()
-          );
-          /*
           setState(() {
             screenView = TodoListPage () ;
-                //TodoList();
-                //FolderHomeScreen();
+            //TodoList();
+            //FolderHomeScreen();
           });
-
-           */
-
           break;
         default:
           break;
